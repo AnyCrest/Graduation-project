@@ -2,12 +2,17 @@ import sqlite3
 import pandas as pd
 from flask import Flask, render_template, jsonify, request
 
+import os
+
 app = Flask(__name__)
-DATABASE = 'student_expense_record.db'
+DATABASE = os.environ.get('DATABASE_PATH', 'student_expense_record.db')
 
 
 def get_db():
-    conn = sqlite3.connect(DATABASE)
+    db_path = os.environ.get('DATABASE_PATH', 'student_expense_record.db')
+    if not os.path.isabs(db_path):
+        db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), db_path)
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -270,4 +275,4 @@ if __name__ == '__main__':
     init_db()
     print("数据库初始化完成")
     print("启动服务器...")
-    app.run(debug=False, host='0.0.0.0', port=5001)
+    app.run(debug=False, host='0.0.0.0', port=8000)
