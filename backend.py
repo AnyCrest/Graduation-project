@@ -31,37 +31,38 @@ def init_db():
     conn.close()
 
 
-# 以下函数已被注释，用于禁用Excel导入功能
-# def save_expenses(df, col_map):
-#     conn = get_db()
-#     conn.execute('DELETE FROM expenses')
-#
-#     date_col = col_map['date']
-#     category_col = col_map.get('category', '')
-#     amount_col = col_map['amount']
-#
-#     for _, row in df.iterrows():
-#         date_val = row[date_col]
-#         category_val = row[category_col] if category_col else '未分类'
-#         amount_val = row[amount_col]
-#
-#         if pd.isna(date_val) or pd.isna(amount_val):
-#             continue
-#
-#         date_str = pd.to_datetime(date_val).strftime('%Y-%m-%d')
-#         amount_num = pd.to_numeric(str(amount_val).replace(',', '').replace('¥', '').replace(' ', ''), errors='coerce')
-#
-#         if pd.isna(amount_num):
-#             continue
-#
-#         conn.execute(
-#             'INSERT INTO expenses (date, category, amount) VALUES (?, ?, ?)',
-#             (date_str, str(category_val), amount_num)
-#         )
-#
-#     conn.commit()
-#     conn.close()
+# 以下函数已注释，用于禁用Excel导入功能
+"""
+def save_expenses(df, col_map):
+    conn = get_db()
+    conn.execute('DELETE FROM expenses')
 
+    date_col = col_map['date']
+    category_col = col_map.get('category', '')
+    amount_col = col_map['amount']
+
+    for _, row in df.iterrows():
+        date_val = row[date_col]
+        category_val = row[category_col] if category_col else '未分类'
+        amount_val = row[amount_col]
+
+        if pd.isna(date_val) or pd.isna(amount_val):
+            continue
+
+        date_str = pd.to_datetime(date_val).strftime('%Y-%m-%d')
+        amount_num = pd.to_numeric(str(amount_val).replace(',', '').replace('¥', '').replace(' ', ''), errors='coerce')
+
+        if pd.isna(amount_num):
+            continue
+
+        conn.execute(
+            'INSERT INTO expenses (date, category, amount) VALUES (?, ?, ?)',
+            (date_str, str(category_val), amount_num)
+        )
+
+    conn.commit()
+    conn.close()
+"""
 
 def get_all_expenses():
     conn = get_db()
