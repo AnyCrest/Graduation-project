@@ -1,2 +1,0 @@
-[railway]
-entrypoint = "gunicorn --bind :$PORT backend:app --workers 1 --timeout 120"
