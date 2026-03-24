@@ -275,4 +275,4 @@ if __name__ == '__main__':
     init_db()
     print("数据库初始化完成")
     print("启动服务器...")
-    app.run(debug=True, host='0.0.0.0', port=8000)
+    app.run(debug=False, host='0.0.0.0', port=8000)
