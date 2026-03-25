@@ -10,6 +10,7 @@ env/
 *.sqlite
 *.sqlite3
 
+
 # IDE
 .vscode/
 .idea/
