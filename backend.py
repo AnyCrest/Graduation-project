@@ -19,50 +19,10 @@ def get_db():
 
 def init_db():
     conn = get_db()
-    conn.execute('''
-        CREATE TABLE IF NOT EXISTS expenses (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            date TEXT NOT NULL,
-            category TEXT,
-            amount REAL NOT NULL
-        )
-    ''')
+    conn.execute()
     conn.commit()
     conn.close()
 
-
-# 以下函数已注释，用于禁用Excel导入功能
-"""
-def save_expenses(df, col_map):
-    conn = get_db()
-    conn.execute('DELETE FROM expenses')
-
-    date_col = col_map['date']
-    category_col = col_map.get('category', '')
-    amount_col = col_map['amount']
-
-    for _, row in df.iterrows():
-        date_val = row[date_col]
-        category_val = row[category_col] if category_col else '未分类'
-        amount_val = row[amount_col]
-
-        if pd.isna(date_val) or pd.isna(amount_val):
-            continue
-
-        date_str = pd.to_datetime(date_val).strftime('%Y-%m-%d')
-        amount_num = pd.to_numeric(str(amount_val).replace(',', '').replace('¥', '').replace(' ', ''), errors='coerce')
-
-        if pd.isna(amount_num):
-            continue
-
-        conn.execute(
-            'INSERT INTO expenses (date, category, amount) VALUES (?, ?, ?)',
-            (date_str, str(category_val), amount_num)
-        )
-
-    conn.commit()
-    conn.close()
-"""
 
 def get_all_expenses():
     conn = get_db()
@@ -197,65 +157,9 @@ def get_date_index():
     }
 
 
-# 以下函数已被注释，用于禁用Excel导入功能
-# def infer_columns(df):
-#     cols = [str(c).strip() for c in df.columns]
-#     date_col, category_col, amount_col = None, None, None
-#
-#     date_kw = ['日期', 'date', '时间', 'time', '日']
-#     category_kw = ['类别', '分类', 'category', '类型', '消费类型']
-#     amount_kw = ['金额', '消费', 'amount', '支出', '花费', '元']
-#
-#     for i, c in enumerate(cols):
-#         if not date_col and any(k in c for k in date_kw):
-#             date_col = df.columns[i]
-#         if not category_col and any(k in c or k in c.lower() for k in category_kw):
-#             category_col = df.columns[i]
-#         if not amount_col and any(k in c for k in amount_kw):
-#             amount_col = df.columns[i]
-#
-#     if date_col is None and len(cols) >= 1:
-#         date_col = df.columns[0]
-#     if category_col is None and len(cols) >= 2:
-#         category_col = df.columns[1]
-#     if amount_col is None and len(cols) >= 3:
-#         amount_col = df.columns[2]
-#
-#     return {'date': date_col, 'category': category_col, 'amount': amount_col}
-
-
 @app.route('/')
 def index():
     return render_template('frontend.html')
-
-
-# @app.route('/api/upload', methods=['POST'])
-# def upload_file():
-#     if 'file' not in request.files:
-#         return jsonify({'success': False, 'message': '未选择文件'}), 400
-#
-#     f = request.files['file']
-#     if not f.filename:
-#         return jsonify({'success': False, 'message': '未选择文件'}), 400
-#
-#     if not (f.filename.endswith('.xlsx') or f.filename.endswith('.xls')):
-#         return jsonify({'success': False, 'message': '请上传 Excel 文件'}), 400
-#
-#     try:
-#         import io
-#         buf = io.BytesIO(f.read())
-#         df = pd.read_excel(buf, engine='openpyxl' if f.filename.endswith('.xlsx') else None)
-#
-#         if df.empty or len(df.columns) == 0:
-#             return jsonify({'success': False, 'message': 'Excel 无有效数据'}), 400
-#
-#         col_map = infer_columns(df)
-#         save_expenses(df, col_map)
-#         stats = get_statistics()
-#
-#         return jsonify({'success': True, 'message': '导入成功', 'statistics': stats})
-#     except Exception as e:
-#         return jsonify({'success': False, 'message': f'解析失败: {str(e)}'}), 400
 
 
 @app.route('/api/statistics')
